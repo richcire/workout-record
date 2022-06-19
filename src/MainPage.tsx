@@ -20,39 +20,39 @@ const Window = styled.div`
   height: 100vh;
   width: 100vw;
   background-color: #a0eeff;
-
-  .calendar {
-    position: absolute;
-    top: 20px;
-    right: 2%;
-  }
+`;
+const SideContainer = styled.div`
+  display: flex;
+  position: fixed;
+  right: 0;
+  top: 0;
 `;
 
-// const SideBarContainer = styled.div<{ isSideBarVisible: boolean }>`
-//   position: fixed;
-//   display: ${(props) => (props.isSideBarVisible ? "flex" : "none")};
-//   top: 0;
-//   height: 100vh;
-//   width: 100vw;
-// `;
+const CalendarIconContainer = styled(motion.div)`
+  width: 80px;
+  height: 80px;
+  background-color: whitesmoke;
 
-// const Overlay = styled.div`
-//   background-color: rgba(0, 0, 0, 0.3);
-//   width: 100%;
-//   height: 100%;
-// `;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 40px;
+`;
 
 const SideBar = styled(motion.div)`
   background-color: whitesmoke;
-  position: fixed;
-  top: 0;
-  right: 0;
+
   height: 100%;
 `;
 
-const variants = {
-  open: { opacity: 1, x: 0 },
-  close: { opacity: 0, x: "-100%" },
+const calendarVariants = {
+  close: { opacity: 0, x: 1000, display: "none" },
+  open: { opacity: 1, x: 0, display: "block" },
+};
+
+const iconVariants = {
+  close: { x: 0 },
+  open: { x: -10 },
 };
 
 function MainPage() {
@@ -66,14 +66,24 @@ function MainPage() {
   return (
     <Window>
       <NumberOfDays>365</NumberOfDays>
-      <GoCalendar className="calendar" size={50} onClick={onIconClick} />
+      <SideContainer>
+        <CalendarIconContainer
+          initial={false}
+          animate={isSideBarVisible ? "open" : "close"}
+          variants={iconVariants}
+        >
+          <GoCalendar className="calendar" size={50} onClick={onIconClick} />
+        </CalendarIconContainer>
 
-      <SideBar
-        animate={isSideBarVisible ? "open" : "close"}
-        variants={variants}
-      >
-        <Calendar />
-      </SideBar>
+        <SideBar
+          initial={false}
+          animate={isSideBarVisible ? "open" : "close"}
+          variants={calendarVariants}
+          transition={{ type: "tween" }}
+        >
+          <Calendar />
+        </SideBar>
+      </SideContainer>
     </Window>
   );
 }
