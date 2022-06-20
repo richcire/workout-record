@@ -102,6 +102,26 @@ const SideBarBtn = () => (
   </BtnContainer>
 );
 
+const CalendarContainer = styled(motion.div)`
+  position: absolute;
+  width: 100%;
+  top: 20%;
+  display: flex;
+  justify-content: center;
+`;
+
+const calendarVariants = {
+  open: {
+    opacity: 1,
+    transition: {
+      delay: 0.2,
+    },
+  },
+  closed: {
+    opacity: 0,
+  },
+};
+
 function MainPage() {
   const [isOpen, cycleIsOpen] = useCycle(false, true);
 
@@ -137,6 +157,9 @@ function MainPage() {
             />
           </svg>
         </BtnContainer>
+        <CalendarContainer variants={calendarVariants}>
+          <Calendar />
+        </CalendarContainer>
       </SideBar>
     </Window>
   );
