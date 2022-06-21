@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import RecentRecords from "./components/RecentRecords";
 
 import SideBar from "./components/SideBar";
 
@@ -9,14 +10,16 @@ const NumberOfDays = styled.div`
   color: #341f97;
   width: 100%;
   text-align: center;
-  position: relative;
-  top: 5%;
+  padding-top: 30px;
+  padding-bottom: 90px;
 `;
 
 const Window = styled.div`
-  height: 100vh;
   width: 100vw;
   background-color: #a0eeff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 function MainPage() {
@@ -24,6 +27,9 @@ function MainPage() {
     <Window>
       <NumberOfDays>365</NumberOfDays>
       <SideBar />
+      <RecentRecords />
+      <NumberOfDays>Graph</NumberOfDays>
+      <NumberOfDays>Whole records</NumberOfDays>
     </Window>
   );
 }
