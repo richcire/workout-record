@@ -4,6 +4,7 @@ import styled from "styled-components";
 import "react-calendar/dist/Calendar.css";
 import SideBarBtn from "./SideBarBtn";
 import { useState } from "react";
+import RecordInputScreen from "./RecordInputScreen";
 
 const SideBarContainer = styled(motion.div)`
   background-color: whitesmoke;
@@ -48,44 +49,12 @@ const calendarVariants = {
   },
 };
 
-const Overlay = styled(motion.div)`
-  position: fixed;
-  height: 100vh;
-  width: 100vw;
-  background-color: rgba(0, 0, 0, 0.4);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const overlayVariants = {
-  open: {
-    display: "flex",
-  },
-  closed: {
-    display: "none",
-  },
-};
-
-const RecordInputContainer = styled.div`
-  background-color: rgba(0, 0, 0, 0.6);
-  height: 80%;
-  width: 80%;
-`;
-
-const ExitBtnContainer = styled.button`
-  position: absolute;
-  top: 5%;
-  right: 5%;
-  background-color: transparent;
-  border: none;
-`;
-
 function SideBar() {
   const [isOpen, cycleIsOpen] = useCycle(false, true);
-  const [isDayClicked, cylceIsDayClicked] = useCycle(false, true);
+  const [isDayClicked, cycleIsDayClicked] = useCycle(false, true);
 
   const [date, setDate] = useState(new Date());
+  const [clickedDate, setClickedDate] = useState(new Date());
 
   const onChange = (nextDate: Date) => {
     setDate(nextDate);
@@ -93,7 +62,8 @@ function SideBar() {
 
   const onClickDay = (clickedDate: Date) => {
     console.log(clickedDate);
-    cylceIsDayClicked();
+    cycleIsDayClicked();
+    setClickedDate(clickedDate);
   };
 
   return (
@@ -108,31 +78,11 @@ function SideBar() {
           <Calendar onChange={onChange} value={date} onClickDay={onClickDay} />
         </CalendarContainer>
       </SideBarContainer>
-      <Overlay
-        initial={false}
-        animate={isDayClicked ? "open" : "closed"}
-        variants={overlayVariants}
-      >
-        <RecordInputContainer />
-        <ExitBtnContainer onClick={() => cylceIsDayClicked()}>
-          <svg width={23} height={23} viewBox="0 0 23 23">
-            <path
-              fill="transparent"
-              strokeWidth="3"
-              stroke="white"
-              strokeLinecap="round"
-              d="M 3 16.5 L 17 2.5"
-            />
-            <path
-              fill="transparent"
-              strokeWidth="3"
-              stroke="white"
-              strokeLinecap="round"
-              d="M 3 2.5 L 17 16.346"
-            />
-          </svg>
-        </ExitBtnContainer>
-      </Overlay>
+      <RecordInputScreen
+        isDayClicked={isDayClicked}
+        cycleIsDayClicked={cycleIsDayClicked}
+        clickedDate={clickedDate}
+      />
     </>
   );
 }
