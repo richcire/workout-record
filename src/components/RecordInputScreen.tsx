@@ -22,6 +22,7 @@ const overlayVariants = {
 };
 
 const RecordInputContainer = styled.div`
+  position: relative;
   background-color: #7f8fa6;
   height: 80%;
   width: 500px;
@@ -48,6 +49,17 @@ const ExitBtnContainer = styled.button`
   border: none;
 `;
 
+const UpdateBtn = styled.button`
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  background-color: #487eb0;
+  width: 120px;
+  height: 50px;
+  border: none;
+  border-radius: 10px;
+`;
+
 interface IRecordInputScreen {
   isDayClicked: boolean;
   cycleIsDayClicked: () => void;
@@ -68,6 +80,7 @@ function RecordInputScreen(props: IRecordInputScreen) {
         {listOfThreeExercises.map((exercise) => (
           <ExerciseInputRow exerciseName={exercise} />
         ))}
+        <UpdateBtn />
       </RecordInputContainer>
       <ExitBtnContainer onClick={() => props.cycleIsDayClicked()}>
         <svg width={23} height={23} viewBox="0 0 23 23">
