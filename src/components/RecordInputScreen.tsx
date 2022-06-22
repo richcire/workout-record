@@ -21,9 +21,10 @@ const overlayVariants = {
 };
 
 const RecordInputContainer = styled.div`
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: #7f8fa6;
   height: 80%;
   width: 80%;
+  border-radius: 20px;
 `;
 
 const DateViewer = styled.div`

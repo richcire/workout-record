@@ -7,7 +7,7 @@ const NumberOfDays = styled.div`
   font-size: 8rem;
   font-family: "Roboto Slab", serif;
   font-weight: bold;
-  color: #341f97;
+  color: #192a56;
   width: 100%;
   text-align: center;
   padding-top: 30px;
@@ -16,7 +16,7 @@ const NumberOfDays = styled.div`
 
 const Window = styled.div`
   width: 100vw;
-  background-color: #a0eeff;
+  background-color: #dcdde1;
   display: flex;
   flex-direction: column;
   align-items: center;

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const CardsContainer = styled.div`
-  background-color: beige;
+  background-color: transparent;
   width: 80%;
   height: 400px;
   display: flex;
@@ -11,7 +11,7 @@ const CardsContainer = styled.div`
 const Card = styled.div`
   width: 20%;
   height: 100%;
-  background-color: azure;
+  background-color: #353b48;
   border-radius: 20px;
 `;
 function RecentRecords() {
