@@ -33,9 +33,11 @@ const RecordInputContainer = styled.div`
 
 const DateViewer = styled.div`
   width: 100%;
-  font-size: 24px;
+  font-size: 40px;
   font-family: "Roboto Slab", serif;
-  margin-bottom: 30px;
+  margin-bottom: 80px;
+  margin-left: 40px;
+  margin-top: 20px;
 `;
 
 const ExitBtnContainer = styled.button`
@@ -52,6 +54,8 @@ interface IRecordInputScreen {
   clickedDate: Date;
 }
 
+const listOfThreeExercises = ["Bench Press", "Squat", "Deadlift"];
+
 function RecordInputScreen(props: IRecordInputScreen) {
   return (
     <Overlay
@@ -60,8 +64,10 @@ function RecordInputScreen(props: IRecordInputScreen) {
       variants={overlayVariants}
     >
       <RecordInputContainer>
-        <DateViewer>{props.clickedDate.toString()}</DateViewer>
-        <ExerciseInputRow />
+        <DateViewer>{props.clickedDate.toDateString()}</DateViewer>
+        {listOfThreeExercises.map((exercise) => (
+          <ExerciseInputRow exerciseName={exercise} />
+        ))}
       </RecordInputContainer>
       <ExitBtnContainer onClick={() => props.cycleIsDayClicked()}>
         <svg width={23} height={23} viewBox="0 0 23 23">
