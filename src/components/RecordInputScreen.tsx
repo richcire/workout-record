@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import styled from "styled-components";
+import ExerciseInputRow from "./ExerciseInputRow";
 
 const Overlay = styled(motion.div)`
   position: fixed;
@@ -25,11 +26,16 @@ const RecordInputContainer = styled.div`
   height: 80%;
   width: 80%;
   border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const DateViewer = styled.div`
+  width: 100%;
   font-size: 24px;
   font-family: "Roboto Slab", serif;
+  margin-bottom: 30px;
 `;
 
 const ExitBtnContainer = styled.button`
@@ -55,6 +61,7 @@ function RecordInputScreen(props: IRecordInputScreen) {
     >
       <RecordInputContainer>
         <DateViewer>{props.clickedDate.toString()}</DateViewer>
+        <ExerciseInputRow />
       </RecordInputContainer>
       <ExitBtnContainer onClick={() => props.cycleIsDayClicked()}>
         <svg width={23} height={23} viewBox="0 0 23 23">
