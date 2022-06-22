@@ -24,7 +24,7 @@ const overlayVariants = {
 const RecordInputContainer = styled.div`
   background-color: #7f8fa6;
   height: 80%;
-  width: 80%;
+  width: 500px;
   border-radius: 20px;
   display: flex;
   flex-direction: column;

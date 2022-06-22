@@ -5,30 +5,17 @@ const RowContainer = styled.form`
   display: flex;
   width: 80%;
   height: 30px;
-  justify-content: space-between;
 `;
 
-const NameOfExercise = styled.input`
+const NameOfExercise = styled.div`
   background-color: whitesmoke;
   border: none;
   border-radius: 8px;
+  width: 200px;
+  height: 50px;
 `;
 
 const WeightOfExercise = styled.input`
-  background-color: whitesmoke;
-  border: none;
-  border-radius: 8px;
-  width: 50px;
-`;
-
-const SetNumber = styled.select`
-  background-color: whitesmoke;
-  border: none;
-  border-radius: 8px;
-  width: 40px;
-`;
-
-const TotalWeight = styled.div`
   background-color: whitesmoke;
   border: none;
   border-radius: 8px;
@@ -43,14 +30,8 @@ function ExerciseInputRow() {
   };
   return (
     <RowContainer>
-      <NameOfExercise />
+      <NameOfExercise>Bench Press</NameOfExercise>
       <WeightOfExercise />
-      <SetNumber onChange={onSetNumberChange}>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-      </SetNumber>
-      <TotalWeight />
     </RowContainer>
   );
 }
