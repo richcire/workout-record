@@ -103,6 +103,8 @@ interface IThreeExercicsesData {
 }
 
 function RecordInputScreen(props: IRecordInputScreen) {
+  const clikedDateToString = props.clickedDate.toString();
+  const [day, month, date, year] = clikedDateToString.split(" ");
   const [threeExerciseData, setThreeExerciseDate] =
     useState<IThreeExercicsesData>({
       benchPress: "0",
@@ -120,7 +122,7 @@ function RecordInputScreen(props: IRecordInputScreen) {
 
   const onWeightDataSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(threeExerciseData);
+    console.log(day, month, date, year);
   };
 
   return (
