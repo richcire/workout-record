@@ -1,6 +1,8 @@
+import { doc, updateDoc } from "firebase/firestore";
 import { motion } from "framer-motion";
 import React, { useState } from "react";
 import styled from "styled-components";
+import { db } from "../firebase-config";
 import ExerciseInputRow from "./ExerciseInputRow";
 
 const Overlay = styled(motion.div)`
@@ -120,9 +122,11 @@ function RecordInputScreen(props: IRecordInputScreen) {
     });
   };
 
-  const onWeightDataSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const onWeightDataSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log(day, month, date, year);
+    const dateRef = doc(db, year, month);
+    await updateDoc(dateRef, { ...threeExerciseData }); //Need to handle when docRef doesn;t exist( ex)first day of july )
   };
 
   return (
