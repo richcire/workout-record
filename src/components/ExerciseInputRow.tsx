@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { useRecoilState } from "recoil";
 import styled from "styled-components";
+import { threeExercisesState } from "../atoms";
 
-const RowContainer = styled.form`
+const RowContainer = styled.div`
   display: flex;
   width: 80%;
   height: 30px;
@@ -33,11 +35,8 @@ interface IExerciseInputRow {
 }
 
 function ExerciseInputRow(props: IExerciseInputRow) {
-  const [selectedSetNum, setSelectedSetNum] = useState(3);
-  const onSetNumberChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    e.preventDefault();
-    console.log(e.target.value);
-  };
+  const [threeExercise, setThreeExercise] = useRecoilState(threeExercisesState);
+
   return (
     <RowContainer>
       <NameOfExercise>{props.exerciseName}</NameOfExercise>

@@ -1,12 +1,15 @@
 import React from "react";
+import { RecoilRoot } from "recoil";
 import { Reset } from "styled-reset";
 import MainPage from "./MainPage";
 
 function App() {
   return (
     <>
-      <Reset />
-      <MainPage />
+      <RecoilRoot>
+        <Reset />
+        <MainPage />
+      </RecoilRoot>
     </>
   );
 }

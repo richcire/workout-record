@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import React, { useState } from "react";
 import styled from "styled-components";
 import ExerciseInputRow from "./ExerciseInputRow";
 
@@ -21,7 +22,7 @@ const overlayVariants = {
   },
 };
 
-const RecordInputContainer = styled.div`
+const RecordInputContainer = styled.form`
   position: relative;
   background-color: #7f8fa6;
   height: 80%;
@@ -68,19 +69,93 @@ interface IRecordInputScreen {
 
 const listOfThreeExercises = ["Bench Press", "Squat", "Deadlift"];
 
+const RowContainer = styled.div`
+  display: flex;
+  width: 80%;
+  height: 30px;
+  margin-bottom: 100px;
+`;
+
+const NameOfExercise = styled.div`
+  background-color: whitesmoke;
+  border: none;
+  border-radius: 8px;
+  width: 170px;
+  height: 50px;
+  font-size: 30px;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+`;
+
+const WeightOfExercise = styled.input`
+  background-color: #273c75;
+  border: none;
+  border-radius: 8px;
+  width: 200px;
+  height: 50px;
+`;
+
+interface IThreeExercicsesData {
+  benchPress: string;
+  squat: string;
+  deadlift: string;
+}
+
 function RecordInputScreen(props: IRecordInputScreen) {
+  const [threeExerciseData, setThreeExerciseDate] =
+    useState<IThreeExercicsesData>({
+      benchPress: "0",
+      squat: "0",
+      deadlift: "0",
+    });
+
+  const onWeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setThreeExerciseDate({
+      ...threeExerciseData,
+      [name]: value,
+    });
+  };
+
+  const onWeightDataSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log(threeExerciseData);
+  };
+
   return (
     <Overlay
       initial={false}
       animate={props.isDayClicked ? "open" : "closed"}
       variants={overlayVariants}
     >
-      <RecordInputContainer>
+      <RecordInputContainer onSubmit={onWeightDataSubmit}>
         <DateViewer>{props.clickedDate.toDateString()}</DateViewer>
-        {listOfThreeExercises.map((exercise) => (
-          <ExerciseInputRow exerciseName={exercise} />
-        ))}
-        <UpdateBtn />
+        <RowContainer>
+          <NameOfExercise>Bench Press</NameOfExercise>
+          <WeightOfExercise
+            name="benchPress"
+            value={threeExerciseData?.benchPress}
+            onChange={onWeightChange}
+          />
+        </RowContainer>
+        <RowContainer>
+          <NameOfExercise>Squat</NameOfExercise>
+          <WeightOfExercise
+            name="squat"
+            value={threeExerciseData?.squat}
+            onChange={onWeightChange}
+          />
+        </RowContainer>
+        <RowContainer>
+          <NameOfExercise>Deadlift</NameOfExercise>
+          <WeightOfExercise
+            name="deadlift"
+            value={threeExerciseData?.deadlift}
+            onChange={onWeightChange}
+          />
+        </RowContainer>
+        <UpdateBtn type="submit">UPDATE</UpdateBtn>
       </RecordInputContainer>
       <ExitBtnContainer onClick={() => props.cycleIsDayClicked()}>
         <svg width={23} height={23} viewBox="0 0 23 23">
