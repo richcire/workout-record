@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { threeExercisesState } from "../atoms";
 
 const RowContainer = styled.div`
   display: flex;
@@ -35,8 +34,6 @@ interface IExerciseInputRow {
 }
 
 function ExerciseInputRow(props: IExerciseInputRow) {
-  const [threeExercise, setThreeExercise] = useRecoilState(threeExercisesState);
-
   return (
     <RowContainer>
       <NameOfExercise>{props.exerciseName}</NameOfExercise>

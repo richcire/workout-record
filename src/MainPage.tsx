@@ -1,7 +1,12 @@
+import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import { useEffect } from "react";
+import { useRecoilState } from "recoil";
 import styled from "styled-components";
+import { data2022State } from "./atoms";
 import RecentRecords from "./components/RecentRecords";
 
 import SideBar from "./components/SideBar";
+import { db } from "./firebase-config";
 
 const NumberOfDays = styled.div`
   font-size: 8rem;
@@ -23,6 +28,18 @@ const Window = styled.div`
 `;
 
 function MainPage() {
+  const [data2022, setData2022] = useRecoilState(data2022State);
+  const data2022Ref = collection(db, "2022");
+  const getDataFromFirestore = async () => {
+    const dataSnapshot = await getDocs(data2022Ref);
+    dataSnapshot.forEach((doc) => {
+      console.log(doc.data());
+    });
+  };
+
+  useEffect(() => {
+    getDataFromFirestore();
+  }, []);
   return (
     <Window>
       <NumberOfDays>365</NumberOfDays>

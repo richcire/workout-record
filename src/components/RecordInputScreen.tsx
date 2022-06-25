@@ -125,8 +125,12 @@ function RecordInputScreen(props: IRecordInputScreen) {
   const onWeightDataSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log(day, month, date, year);
-    const dateRef = doc(db, year, month);
-    await updateDoc(dateRef, { ...threeExerciseData }); //Need to handle when docRef doesn;t exist( ex)first day of july )
+    try {
+      const dateRef = doc(db, year, month);
+      await updateDoc(dateRef, { [date]: { ...threeExerciseData } }); //Need to handle when docRef doesn;t exist( ex)first day of july )
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (

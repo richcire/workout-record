@@ -5,11 +5,22 @@ interface IThreeExercicsesState {
   squat: number;
   deadlift: number;
 }
-export const threeExercisesState = atom<IThreeExercicsesState>({
-  key: "threeExercisesState",
-  default: {
-    benchPress: 0,
-    squat: 0,
-    deadlift: 0,
-  },
+// export const threeExercisesState = atom<IThreeExercicsesState>({
+//   key: "threeExercisesState",
+//   default: {
+//     benchPress: 0,
+//     squat: 0,
+//     deadlift: 0,
+//   },
+// });
+
+// interface I2022Data {
+//   Jan: {
+//     :
+//   }
+// }
+
+export const data2022State = atom({
+  key: "2022Data",
+  default: {},
 });
