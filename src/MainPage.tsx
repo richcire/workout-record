@@ -1,4 +1,10 @@
-import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  onSnapshot,
+} from "firebase/firestore";
 import { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
@@ -33,13 +39,17 @@ function MainPage() {
   const getDataFromFirestore = async () => {
     const dataSnapshot = await getDocs(data2022Ref);
     dataSnapshot.forEach((doc) => {
-      console.log(doc.data());
+      setData2022({
+        ...data2022,
+        [doc.id]: doc.data(),
+      });
     });
   };
 
   useEffect(() => {
     getDataFromFirestore();
   }, []);
+  console.log(data2022);
   return (
     <Window>
       <NumberOfDays>365</NumberOfDays>

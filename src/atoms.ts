@@ -20,7 +20,7 @@ interface IThreeExercicsesState {
 //   }
 // }
 
-export const data2022State = atom({
+export const data2022State = atom<any>({
   key: "2022Data",
   default: {},
 });

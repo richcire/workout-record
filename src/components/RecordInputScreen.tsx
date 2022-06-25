@@ -1,7 +1,9 @@
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, setDoc, updateDoc } from "firebase/firestore";
 import { motion } from "framer-motion";
 import React, { useState } from "react";
+import { useRecoilState } from "recoil";
 import styled from "styled-components";
+import { data2022State } from "../atoms";
 import { db } from "../firebase-config";
 import ExerciseInputRow from "./ExerciseInputRow";
 
@@ -107,6 +109,9 @@ interface IThreeExercicsesData {
 function RecordInputScreen(props: IRecordInputScreen) {
   const clikedDateToString = props.clickedDate.toString();
   const [day, month, date, year] = clikedDateToString.split(" ");
+
+  const [data2022, setData2022] = useRecoilState(data2022State);
+
   const [threeExerciseData, setThreeExerciseDate] =
     useState<IThreeExercicsesData>({
       benchPress: "0",
@@ -126,8 +131,15 @@ function RecordInputScreen(props: IRecordInputScreen) {
     e.preventDefault();
     console.log(day, month, date, year);
     try {
-      const dateRef = doc(db, year, month);
-      await updateDoc(dateRef, { [date]: { ...threeExerciseData } }); //Need to handle when docRef doesn;t exist( ex)first day of july )
+      if (!Object.keys(data2022).includes(month)) {
+        await setDoc(doc(db, year, month), {
+          [date]: { ...threeExerciseData },
+        });
+      } else {
+        const dateRef = doc(db, year, month);
+        await updateDoc(dateRef, { [date]: { ...threeExerciseData } }); //Need to handle when docRef doesn;t exist( ex)first day of july )
+      }
+      window.location.reload();
     } catch (e) {
       console.error(e);
     }
