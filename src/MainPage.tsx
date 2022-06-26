@@ -8,7 +8,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { data2022State } from "./atoms";
+import { data2022State, IData2022 } from "./atoms";
 import RecentRecords from "./components/RecentRecords";
 
 import SideBar from "./components/SideBar";
@@ -54,14 +54,39 @@ function MainPage() {
     fetchDataUpdateNumberOfDays();
   }, []);
 
-  console.log(data2022);
-  console.log(numberOfDays);
+  const calculateThreeWeightSum = (
+    weightData: IData2022 | undefined
+  ): number => {
+    if (typeof weightData === "undefined") {
+      return 0;
+    } else {
+      let totalWeight = 0;
+      for (const month in weightData) {
+        for (const date in weightData[month]) {
+          totalWeight +=
+            parseInt(weightData[month][date].benchPress) +
+            parseInt(weightData[month][date].squat) +
+            parseInt(weightData[month][date].deadlift);
+        }
+      }
+      return totalWeight;
+    }
+  };
+
+  const threeWeightSum = useMemo(
+    () => calculateThreeWeightSum(data2022),
+    [data2022]
+  );
+
+  // const threeWeightSum = calculateThreeWeightSum(data2022);
+  // console.log(data2022);
+  // console.log(numberOfDays);
   return (
     <Window>
       <NumberOfDays>{numberOfDays}</NumberOfDays>
       <SideBar />
       <RecentRecords />
-      <NumberOfDays>Graph</NumberOfDays>
+      <NumberOfDays>{threeWeightSum}</NumberOfDays>
       <NumberOfDays>Whole records</NumberOfDays>
     </Window>
   );

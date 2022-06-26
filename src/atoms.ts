@@ -20,7 +20,17 @@ interface IThreeExercicsesState {
 //   }
 // }
 
-export const data2022State = atom<any>({
+export interface IData2022 {
+  [key: string]: {
+    [key: string]: {
+      benchPress: string;
+      squat: string;
+      deadlift: string;
+    };
+  };
+}
+
+export const data2022State = atom<IData2022>({
   key: "2022Data",
   default: {},
 });
