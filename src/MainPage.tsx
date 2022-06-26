@@ -49,7 +49,7 @@ const TotalWeight = styled.div`
 
 const StatusBar = styled.div`
   width: 80%;
-  height: 200px;
+  height: 240px;
   background-color: rgba(12, 36, 97, 0.9);
   border-radius: 20px;
   margin-top: 40px;
@@ -57,23 +57,43 @@ const StatusBar = styled.div`
   display: flex;
 `;
 
-const NumberOfDays = styled.div`
-  font-size: 9rem;
+const StatusItemContainer = styled.div`
+  height: 100%;
+  width: 25%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`;
+
+const ItemNumberContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+`;
+
+const ItemNumber = styled.div`
+  font-size: 8rem;
   font-family: "Roboto Slab", serif;
   font-weight: bold;
   color: #f5f6fa;
-  width: 15%;
+
   display: flex;
   justify-content: center;
   align-items: center;
 `;
 
-const NumberOfDaysExplanation = styled.div`
-  font-size: 3rem;
+const Kg = styled.div`
+  font-size: 1rem;
+  font-family: "Roboto Slab", serif;
+  color: #f5f6fa;
+`;
+
+const ItemNumberExplanation = styled.div`
+  font-size: 2rem;
   font-family: "Roboto Slab", serif;
   font-weight: bold;
   color: #f5f6fa;
-  width: 8%;
+
   display: flex;
   justify-content: center;
   align-items: center;
@@ -100,20 +120,32 @@ function MainPage() {
 
   const calculateThreeWeightSum = (
     weightData: IData2022 | undefined
-  ): number => {
+  ): number[] => {
     if (typeof weightData === "undefined") {
-      return 0;
+      return [0, 0, 0, 0];
     } else {
-      let totalWeight = 0;
+      let totalWeightSum = 0;
+      let benchPressWeightSum = 0;
+      let squatWeightSum = 0;
+      let deadliftWeightSum = 0;
       for (const month in weightData) {
         for (const date in weightData[month]) {
-          totalWeight +=
+          totalWeightSum +=
             parseInt(weightData[month][date].benchPress) +
             parseInt(weightData[month][date].squat) +
             parseInt(weightData[month][date].deadlift);
+
+          benchPressWeightSum += parseInt(weightData[month][date].benchPress);
+          squatWeightSum += parseInt(weightData[month][date].squat);
+          deadliftWeightSum += parseInt(weightData[month][date].deadlift);
         }
       }
-      return totalWeight;
+      return [
+        totalWeightSum,
+        benchPressWeightSum,
+        squatWeightSum,
+        deadliftWeightSum,
+      ];
     }
   };
 
@@ -131,10 +163,12 @@ function MainPage() {
     }
   };
 
-  const threeWeightSum = useMemo(
-    () => calculateThreeWeightSum(data2022),
-    [data2022]
-  );
+  const [
+    threeWeightSum,
+    benchPressWeightSum,
+    squatWeightSum,
+    deadliftWeightsum,
+  ] = useMemo(() => calculateThreeWeightSum(data2022), [data2022]);
 
   const numberOfDaysExercised = useMemo(
     () => calculateNumberOfDaysExercised(data2022),
@@ -148,13 +182,36 @@ function MainPage() {
         <TotalWeight>{threeWeightSum}</TotalWeight>
       </Header>
       <StatusBar>
-        <NumberOfDays>{numberOfDaysExercised}</NumberOfDays>
-        <NumberOfDaysExplanation>Days</NumberOfDaysExplanation>
+        <StatusItemContainer>
+          <ItemNumber>{numberOfDaysExercised}</ItemNumber>
+          <ItemNumberExplanation>Days</ItemNumberExplanation>
+        </StatusItemContainer>
+        <StatusItemContainer>
+          <ItemNumberContainer>
+            <ItemNumber>{benchPressWeightSum}</ItemNumber>
+            <Kg>kg</Kg>
+          </ItemNumberContainer>
+          <ItemNumberExplanation>Bench Press</ItemNumberExplanation>
+        </StatusItemContainer>
+        <StatusItemContainer>
+          <ItemNumberContainer>
+            <ItemNumber>{squatWeightSum}</ItemNumber>
+            <Kg>kg</Kg>
+          </ItemNumberContainer>
+
+          <ItemNumberExplanation>Squat</ItemNumberExplanation>
+        </StatusItemContainer>
+        <StatusItemContainer>
+          <ItemNumberContainer>
+            <ItemNumber>{deadliftWeightsum}</ItemNumber>
+            <Kg>kg</Kg>
+          </ItemNumberContainer>
+
+          <ItemNumberExplanation>Deadlift</ItemNumberExplanation>
+        </StatusItemContainer>
       </StatusBar>
       <SideBar />
       <RecentRecords />
-      <NumberOfDays>{numberOfDaysExercised}</NumberOfDays>
-      <NumberOfDays>3대 500</NumberOfDays>
     </Window>
   );
 }
