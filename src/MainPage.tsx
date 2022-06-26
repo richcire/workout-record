@@ -35,7 +35,7 @@ const Window = styled.div`
 
 function MainPage() {
   const [data2022, setData2022] = useRecoilState(data2022State);
-  const [numberOfDays, setNumberOfDays] = useState(0);
+  // const [numberOfDays, setNumberOfDays] = useState(0);
 
   const data2022Ref = collection(db, "2022");
   const fetchDataUpdateNumberOfDays = async () => {
@@ -44,10 +44,10 @@ function MainPage() {
     const dataSnapshot = await getDocs(data2022Ref);
     dataSnapshot.forEach((doc) => {
       dataCopy = { ...dataCopy, [doc.id]: doc.data() };
-      numberOfDaysCopy += Object.keys(doc.data()).length;
+      // numberOfDaysCopy += Object.keys(doc.data()).length;
     });
     setData2022(dataCopy);
-    setNumberOfDays(numberOfDaysCopy);
+    // setNumberOfDays(numberOfDaysCopy);
   };
 
   useEffect(() => {
@@ -73,17 +73,33 @@ function MainPage() {
     }
   };
 
+  const calculateNumberOfDaysExercised = (
+    weightData: IData2022 | undefined
+  ): number => {
+    if (typeof weightData === "undefined") {
+      return 0;
+    } else {
+      let numberOfDays = 0;
+      for (const month in weightData) {
+        numberOfDays += Object.keys(weightData[month]).length;
+      }
+      return numberOfDays;
+    }
+  };
+
   const threeWeightSum = useMemo(
     () => calculateThreeWeightSum(data2022),
     [data2022]
   );
 
-  // const threeWeightSum = calculateThreeWeightSum(data2022);
-  // console.log(data2022);
-  // console.log(numberOfDays);
+  const numberOfDaysExercised = useMemo(
+    () => calculateNumberOfDaysExercised(data2022),
+    [data2022]
+  );
+
   return (
     <Window>
-      <NumberOfDays>{numberOfDays}</NumberOfDays>
+      <NumberOfDays>{numberOfDaysExercised}</NumberOfDays>
       <SideBar />
       <RecentRecords />
       <NumberOfDays>{threeWeightSum}</NumberOfDays>
