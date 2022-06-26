@@ -5,7 +5,7 @@ import {
   getDocs,
   onSnapshot,
 } from "firebase/firestore";
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { data2022State } from "./atoms";
@@ -35,24 +35,30 @@ const Window = styled.div`
 
 function MainPage() {
   const [data2022, setData2022] = useRecoilState(data2022State);
+  const [numberOfDays, setNumberOfDays] = useState(0);
+
   const data2022Ref = collection(db, "2022");
-  const getDataFromFirestore = async () => {
+  const fetchDataUpdateNumberOfDays = async () => {
+    let dataCopy = {};
+    let numberOfDaysCopy = 0;
     const dataSnapshot = await getDocs(data2022Ref);
     dataSnapshot.forEach((doc) => {
-      setData2022({
-        ...data2022,
-        [doc.id]: doc.data(),
-      });
+      dataCopy = { ...dataCopy, [doc.id]: doc.data() };
+      numberOfDaysCopy += Object.keys(doc.data()).length;
     });
+    setData2022(dataCopy);
+    setNumberOfDays(numberOfDaysCopy);
   };
 
   useEffect(() => {
-    getDataFromFirestore();
+    fetchDataUpdateNumberOfDays();
   }, []);
+
   console.log(data2022);
+  console.log(numberOfDays);
   return (
     <Window>
-      <NumberOfDays>365</NumberOfDays>
+      <NumberOfDays>{numberOfDays}</NumberOfDays>
       <SideBar />
       <RecentRecords />
       <NumberOfDays>Graph</NumberOfDays>
