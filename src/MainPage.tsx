@@ -14,17 +14,6 @@ import RecentRecords from "./components/RecentRecords";
 import SideBar from "./components/SideBar";
 import { db } from "./firebase-config";
 
-const NumberOfDays = styled.div`
-  font-size: 8rem;
-  font-family: "Roboto Slab", serif;
-  font-weight: bold;
-  color: #192a56;
-  width: 100%;
-  text-align: center;
-  padding-top: 30px;
-  padding-bottom: 90px;
-`;
-
 const Window = styled.div`
   width: 100vw;
   background-color: #dcdde1;
@@ -32,22 +21,77 @@ const Window = styled.div`
   flex-direction: column;
   align-items: center;
 `;
+const Header = styled.div`
+  width: 100%;
+  height: 600px;
+  background-color: #1e3799;
+  clip-path: polygon(0 0, 100% 0%, 100% 76%, 0% 100%);
+`;
+
+const HeaderTitle = styled.div`
+  font-size: 6rem;
+  font-family: "Roboto Slab", serif;
+  font-weight: bold;
+  color: #f5f6fa;
+  width: 100%;
+  text-align: center;
+  padding-top: 30px;
+`;
+const TotalWeight = styled.div`
+  font-size: 11rem;
+  font-family: "Roboto Slab", serif;
+  font-weight: bold;
+  color: #f5f6fa;
+  width: 100%;
+  text-align: center;
+  padding-top: 60px;
+`;
+
+const StatusBar = styled.div`
+  width: 80%;
+  height: 200px;
+  background-color: rgba(12, 36, 97, 0.9);
+  border-radius: 20px;
+  margin-top: 40px;
+  margin-bottom: 40px;
+  display: flex;
+`;
+
+const NumberOfDays = styled.div`
+  font-size: 9rem;
+  font-family: "Roboto Slab", serif;
+  font-weight: bold;
+  color: #f5f6fa;
+  width: 15%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const NumberOfDaysExplanation = styled.div`
+  font-size: 3rem;
+  font-family: "Roboto Slab", serif;
+  font-weight: bold;
+  color: #f5f6fa;
+  width: 8%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 function MainPage() {
   const [data2022, setData2022] = useRecoilState(data2022State);
-  // const [numberOfDays, setNumberOfDays] = useState(0);
 
   const data2022Ref = collection(db, "2022");
+
   const fetchDataUpdateNumberOfDays = async () => {
     let dataCopy = {};
     let numberOfDaysCopy = 0;
     const dataSnapshot = await getDocs(data2022Ref);
     dataSnapshot.forEach((doc) => {
       dataCopy = { ...dataCopy, [doc.id]: doc.data() };
-      // numberOfDaysCopy += Object.keys(doc.data()).length;
     });
     setData2022(dataCopy);
-    // setNumberOfDays(numberOfDaysCopy);
   };
 
   useEffect(() => {
@@ -99,11 +143,18 @@ function MainPage() {
 
   return (
     <Window>
-      <NumberOfDays>{numberOfDaysExercised}</NumberOfDays>
+      <Header>
+        <HeaderTitle>3 대</HeaderTitle>
+        <TotalWeight>{threeWeightSum}</TotalWeight>
+      </Header>
+      <StatusBar>
+        <NumberOfDays>{numberOfDaysExercised}</NumberOfDays>
+        <NumberOfDaysExplanation>Days</NumberOfDaysExplanation>
+      </StatusBar>
       <SideBar />
       <RecentRecords />
-      <NumberOfDays>{threeWeightSum}</NumberOfDays>
-      <NumberOfDays>Whole records</NumberOfDays>
+      <NumberOfDays>{numberOfDaysExercised}</NumberOfDays>
+      <NumberOfDays>3대 500</NumberOfDays>
     </Window>
   );
 }
