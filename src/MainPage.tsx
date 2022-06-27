@@ -8,7 +8,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { data2022State, IData2022 } from "./atoms";
+import { data2022State, IData2022, recentExericiseDataState } from "./atoms";
 import ChartSection from "./components/ChartSection";
 import RecentRecords from "./components/RecentRecords";
 
@@ -51,8 +51,26 @@ const TotalWeight = styled.div`
 
 function MainPage() {
   const [data2022, setData2022] = useRecoilState(data2022State);
+  const [recentExerciseData, setRecenteExerciseData] = useRecoilState(
+    recentExericiseDataState
+  );
 
   const data2022Ref = collection(db, "2022");
+
+  const latestMonthsList = [
+    "Dec",
+    "Nov",
+    "Oct",
+    "Sep",
+    "Aug",
+    "Jul",
+    "Jun",
+    "May",
+    "Apr",
+    "Mar",
+    "Feb",
+    "Jan",
+  ];
 
   const fetchDataUpdateNumberOfDays = async () => {
     let dataCopy = {};
@@ -70,24 +88,40 @@ function MainPage() {
 
   const calculateThreeWeightSum = (
     weightData: IData2022 | undefined
-  ): number => {
+  ): number[] => {
     if (typeof weightData === "undefined") {
-      return 0;
+      return [0, 0, 0];
     } else {
       let totalWeightSum = 0;
+      let recentBenchPress = 0;
+      let recentSquat = 0;
+      let recentDeadlift = 0;
 
-      const existingMonthsList = Object.keys(weightData);
-      console.log(existingMonthsList);
-
-      for (const month in weightData) {
-        for (const date in weightData[month]) {
-          totalWeightSum +=
-            parseInt(weightData[month][date].benchPress) +
-            parseInt(weightData[month][date].squat) +
-            parseInt(weightData[month][date].deadlift);
+      const existingMonthsArray = Object.keys(weightData);
+      for (const recentMonth of latestMonthsList) {
+        if (existingMonthsArray.includes(recentMonth)) {
+          // console.log(Object.keys(weightData[recentMonth]));
+          const datesToIntList = Object.keys(weightData[recentMonth]).map(
+            (data) => parseInt(data)
+          );
+          // console.log(datesToIntList);
+          // console.log(Math.max(...datesToIntList));
+          const recentDate = Math.max(...datesToIntList);
+          console.log(weightData[recentMonth][recentDate]);
+          // setRecenteExerciseData(weightData[recentMonth][recentDate]);
+          // totalWeightSum +=
+          recentBenchPress = parseInt(
+            weightData[recentMonth][recentDate].benchPress
+          );
+          recentSquat = parseInt(weightData[recentMonth][recentDate].squat);
+          recentDeadlift = parseInt(
+            weightData[recentMonth][recentDate].deadlift
+          );
+          break;
         }
       }
-      return totalWeightSum;
+
+      return [recentBenchPress, recentSquat, recentDeadlift];
     }
   };
 
@@ -105,7 +139,7 @@ function MainPage() {
     }
   };
 
-  const threeWeightSum = useMemo(
+  const [recentBenchPress, recentSquat, recentDeadlift] = useMemo(
     () => calculateThreeWeightSum(data2022),
     [data2022]
   );
@@ -114,7 +148,7 @@ function MainPage() {
     <Window>
       <Header>
         <HeaderTitle>3 대</HeaderTitle>
-        <TotalWeight>{threeWeightSum}</TotalWeight>
+        <TotalWeight>{recentDeadlift}</TotalWeight>
       </Header>
       <StatusBar />
       <ChartSection />
