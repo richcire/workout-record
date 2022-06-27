@@ -9,6 +9,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { data2022State, IData2022 } from "./atoms";
+import ChartSection from "./components/ChartSection";
 import RecentRecords from "./components/RecentRecords";
 
 import SideBar from "./components/SideBar";
@@ -75,6 +76,9 @@ function MainPage() {
     } else {
       let totalWeightSum = 0;
 
+      const existingMonthsList = Object.keys(weightData);
+      console.log(existingMonthsList);
+
       for (const month in weightData) {
         for (const date in weightData[month]) {
           totalWeightSum +=
@@ -113,6 +117,7 @@ function MainPage() {
         <TotalWeight>{threeWeightSum}</TotalWeight>
       </Header>
       <StatusBar />
+      <ChartSection />
       <SideBar />
       <RecentRecords />
     </Window>
