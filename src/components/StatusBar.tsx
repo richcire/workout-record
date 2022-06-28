@@ -14,28 +14,13 @@ const StatusBarContainer = styled.div`
   display: flex;
 `;
 
-function StatusBar() {
+interface IStatusBar {
+  recentBenchPress: number;
+  recentSquat: number;
+  recentDeadlift: number;
+}
+function StatusBar(props: IStatusBar) {
   const [data2022, setData2022] = useRecoilState(data2022State);
-
-  const calculateThreeWeightSum = (
-    weightData: IData2022 | undefined
-  ): number[] => {
-    if (typeof weightData === "undefined") {
-      return [0, 0, 0];
-    } else {
-      let benchPressWeightSum = 0;
-      let squatWeightSum = 0;
-      let deadliftWeightSum = 0;
-      for (const month in weightData) {
-        for (const date in weightData[month]) {
-          benchPressWeightSum += parseInt(weightData[month][date].benchPress);
-          squatWeightSum += parseInt(weightData[month][date].squat);
-          deadliftWeightSum += parseInt(weightData[month][date].deadlift);
-        }
-      }
-      return [benchPressWeightSum, squatWeightSum, deadliftWeightSum];
-    }
-  };
 
   const calculateNumberOfDaysExercised = (
     weightData: IData2022 | undefined
@@ -51,11 +36,6 @@ function StatusBar() {
     }
   };
 
-  const [benchPressWeightSum, squatWeightSum, deadliftWeightsum] = useMemo(
-    () => calculateThreeWeightSum(data2022),
-    [data2022]
-  );
-
   const numberOfDaysExercised = useMemo(
     () => calculateNumberOfDaysExercised(data2022),
     [data2022]
@@ -63,9 +43,12 @@ function StatusBar() {
   return (
     <StatusBarContainer>
       <StatusItem weightSum={numberOfDaysExercised} exerciseName="Day" />
-      <StatusItem weightSum={benchPressWeightSum} exerciseName="Bench Press" />
-      <StatusItem weightSum={squatWeightSum} exerciseName="Squat" />
-      <StatusItem weightSum={deadliftWeightsum} exerciseName="Deadlift" />
+      <StatusItem
+        weightSum={props.recentBenchPress}
+        exerciseName="Bench Press"
+      />
+      <StatusItem weightSum={props.recentSquat} exerciseName="Squat" />
+      <StatusItem weightSum={props.recentDeadlift} exerciseName="Deadlift" />
     </StatusBarContainer>
   );
 }

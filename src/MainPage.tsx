@@ -92,7 +92,6 @@ function MainPage() {
     if (typeof weightData === "undefined") {
       return [0, 0, 0];
     } else {
-      let totalWeightSum = 0;
       let recentBenchPress = 0;
       let recentSquat = 0;
       let recentDeadlift = 0;
@@ -100,16 +99,13 @@ function MainPage() {
       const existingMonthsArray = Object.keys(weightData);
       for (const recentMonth of latestMonthsList) {
         if (existingMonthsArray.includes(recentMonth)) {
-          // console.log(Object.keys(weightData[recentMonth]));
           const datesToIntList = Object.keys(weightData[recentMonth]).map(
             (data) => parseInt(data)
           );
-          // console.log(datesToIntList);
-          // console.log(Math.max(...datesToIntList));
+
           const recentDate = Math.max(...datesToIntList);
           console.log(weightData[recentMonth][recentDate]);
-          // setRecenteExerciseData(weightData[recentMonth][recentDate]);
-          // totalWeightSum +=
+
           recentBenchPress = parseInt(
             weightData[recentMonth][recentDate].benchPress
           );
@@ -148,9 +144,15 @@ function MainPage() {
     <Window>
       <Header>
         <HeaderTitle>3 대</HeaderTitle>
-        <TotalWeight>{recentDeadlift}</TotalWeight>
+        <TotalWeight>
+          {recentBenchPress + recentDeadlift + recentSquat}
+        </TotalWeight>
       </Header>
-      <StatusBar />
+      <StatusBar
+        recentBenchPress={recentBenchPress}
+        recentDeadlift={recentDeadlift}
+        recentSquat={recentSquat}
+      />
       <ChartSection />
       <SideBar />
       <RecentRecords />
