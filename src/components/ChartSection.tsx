@@ -5,6 +5,7 @@ import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { data2022State, IData2022 } from "../atoms";
 import { MONTHS_LIST, REVERSED_MONTHS_LIST } from "../constants";
+import { changeMonthToInt } from "../utils";
 
 const ChartContainer = styled.div`
   display: flex;
@@ -38,16 +39,21 @@ const makeCategoriesDate = (data2022: IData2022 | undefined): string[] => {
 
     for (const recentMonth of REVERSED_MONTHS_LIST) {
       if (existingMonthsArray.includes(recentMonth)) {
+        console.log(changeMonthToInt(recentMonth));
         const existingDatesArray = Object.keys(data2022[recentMonth]);
         const existingDatesArrayLen = existingDatesArray.length;
         if (existingDatesArrayLen >= availableCategoryNumber) {
           categoriesDate = existingDatesArray
             .sort()
             .slice(existingDatesArrayLen - availableCategoryNumber)
+            .map((date) => changeMonthToInt(recentMonth) + "/" + date)
             .concat(categoriesDate);
           availableCategoryNumber = 0;
         } else {
-          categoriesDate = existingDatesArray.sort().concat(categoriesDate);
+          categoriesDate = existingDatesArray
+            .sort()
+            .map((date) => changeMonthToInt(recentMonth) + "/" + date)
+            .concat(categoriesDate);
 
           availableCategoryNumber -= existingDatesArrayLen;
         }
