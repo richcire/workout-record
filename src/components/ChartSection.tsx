@@ -1,8 +1,9 @@
 import { useState } from "react";
 import Chart from "react-apexcharts";
 import { MonthView } from "react-calendar";
+import { useRecoilValue } from "recoil";
 import styled from "styled-components";
-import { IData2022 } from "../atoms";
+import { data2022State, IData2022 } from "../atoms";
 import { MONTHS_LIST, REVERSED_MONTHS_LIST } from "../constants";
 
 const ChartContainer = styled.div`
@@ -34,17 +35,20 @@ const makeCategoriesDate = (data2022: IData2022 | undefined): string[] => {
     let availableCategoryNumber = 8;
     let categoriesDate: string[] = [];
     const existingMonthsArray = Object.keys(data2022);
+
     for (const recentMonth of REVERSED_MONTHS_LIST) {
       if (existingMonthsArray.includes(recentMonth)) {
         const existingDatesArray = Object.keys(data2022[recentMonth]);
         const existingDatesArrayLen = existingDatesArray.length;
         if (existingDatesArrayLen >= availableCategoryNumber) {
           categoriesDate = existingDatesArray
+            .sort()
             .slice(existingDatesArrayLen - availableCategoryNumber)
             .concat(categoriesDate);
           availableCategoryNumber = 0;
         } else {
-          categoriesDate = existingDatesArray.concat(categoriesDate);
+          categoriesDate = existingDatesArray.sort().concat(categoriesDate);
+
           availableCategoryNumber -= existingDatesArrayLen;
         }
 
@@ -53,13 +57,16 @@ const makeCategoriesDate = (data2022: IData2022 | undefined): string[] => {
         }
       }
     }
-    return ["1", "2", "3", "4", "5", "6", "7", "8"];
+    return categoriesDate;
   }
 };
 
 function ChartSection() {
+  const data2022 = useRecoilValue(data2022State);
   const currentMonthIdx = new Date().getMonth();
   const chartCategoriesMonth = makeCategoriesMonth(currentMonthIdx);
+  const chartCategoriesDate = makeCategoriesDate(data2022);
+  console.log(chartCategoriesDate);
 
   const [chartCategories, setChartCategories] = useState<number[]>();
   const options = {
