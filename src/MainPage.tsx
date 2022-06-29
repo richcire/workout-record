@@ -104,7 +104,6 @@ function MainPage() {
           );
 
           const recentDate = Math.max(...datesToIntList);
-          console.log(weightData[recentMonth][recentDate]);
 
           recentBenchPress = parseInt(
             weightData[recentMonth][recentDate].benchPress

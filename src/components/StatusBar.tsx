@@ -40,6 +40,7 @@ function StatusBar(props: IStatusBar) {
     () => calculateNumberOfDaysExercised(data2022),
     [data2022]
   );
+
   return (
     <StatusBarContainer>
       <StatusItem weightSum={numberOfDaysExercised} exerciseName="Day" />

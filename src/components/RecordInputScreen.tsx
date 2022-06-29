@@ -129,7 +129,7 @@ function RecordInputScreen(props: IRecordInputScreen) {
 
   const onWeightDataSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(day, month, date, year);
+
     try {
       if (!Object.keys(data2022).includes(month)) {
         await setDoc(doc(db, year, month), {
