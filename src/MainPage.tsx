@@ -14,6 +14,7 @@ import RecentRecords from "./components/RecentRecords";
 
 import SideBar from "./components/SideBar";
 import StatusBar from "./components/StatusBar";
+import { MONTHS_LIST, REVERSED_MONTHS_LIST } from "./constants";
 import { db } from "./firebase-config";
 
 const Window = styled.div`
@@ -57,21 +58,6 @@ function MainPage() {
 
   const data2022Ref = collection(db, "2022");
 
-  const latestMonthsList = [
-    "Dec",
-    "Nov",
-    "Oct",
-    "Sep",
-    "Aug",
-    "Jul",
-    "Jun",
-    "May",
-    "Apr",
-    "Mar",
-    "Feb",
-    "Jan",
-  ];
-
   const fetchDataUpdateNumberOfDays = async () => {
     let dataCopy = {};
 
@@ -97,7 +83,7 @@ function MainPage() {
       let recentDeadlift = 0;
 
       const existingMonthsArray = Object.keys(weightData);
-      for (const recentMonth of latestMonthsList) {
+      for (const recentMonth of REVERSED_MONTHS_LIST) {
         if (existingMonthsArray.includes(recentMonth)) {
           const datesToIntList = Object.keys(weightData[recentMonth]).map(
             (data) => parseInt(data)

@@ -12,3 +12,18 @@ export const MONTHS_LIST = [
   "Nov",
   "Dec",
 ];
+
+export const REVERSED_MONTHS_LIST = [
+  "Dec",
+  "Nov",
+  "Oct",
+  "Sep",
+  "Aug",
+  "Jul",
+  "Jun",
+  "May",
+  "Apr",
+  "Mar",
+  "Feb",
+  "Jan",
+];
