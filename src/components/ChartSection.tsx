@@ -5,7 +5,11 @@ import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { data2022State, IData2022 } from "../atoms";
 import { MONTHS_LIST, REVERSED_MONTHS_LIST } from "../constants";
-import { changeMonthToInt } from "../utils";
+import {
+  changeMonthToInt,
+  makeCategoriesDate,
+  makeCategoriesMonth,
+} from "../utils";
 
 const ChartContainer = styled.div`
   display: flex;
@@ -19,68 +23,67 @@ const ChartOptionBtnContainer = styled.div`
 
 const ChartOptionBtn = styled.button``;
 
-const makeCategoriesMonth = (currentMonthIdx: number): string[] => {
-  if (currentMonthIdx - 7 < 0) {
-    return MONTHS_LIST.slice(currentMonthIdx - 7).concat(
-      MONTHS_LIST.slice(0, currentMonthIdx + 1)
-    );
-  } else {
-    return MONTHS_LIST.slice(0, currentMonthIdx);
-  }
-};
+const onTotalBtnClickedUponMonth = (
+  data2022: IData2022,
+  chartCategoriesMonth: string[]
+) => {
+  const chartData: number[] = [];
+  const existingMonthsArray = Object.keys(data2022);
 
-const makeCategoriesDate = (data2022: IData2022 | undefined): string[] => {
-  if (typeof data2022 === "undefined") {
-    return ["1", "2", "3", "4", "5", "6", "7", "8"];
-  } else {
-    let availableCategoryNumber = 8;
-    let categoriesDate: string[] = [];
-    const existingMonthsArray = Object.keys(data2022);
-
-    for (const recentMonth of REVERSED_MONTHS_LIST) {
-      if (existingMonthsArray.includes(recentMonth)) {
-        console.log(changeMonthToInt(recentMonth));
-        const existingDatesArray = Object.keys(data2022[recentMonth]);
-        const existingDatesArrayLen = existingDatesArray.length;
-        if (existingDatesArrayLen >= availableCategoryNumber) {
-          categoriesDate = existingDatesArray
-            .sort()
-            .slice(existingDatesArrayLen - availableCategoryNumber)
-            .map((date) => changeMonthToInt(recentMonth) + "/" + date)
-            .concat(categoriesDate);
-          availableCategoryNumber = 0;
-        } else {
-          categoriesDate = existingDatesArray
-            .sort()
-            .map((date) => changeMonthToInt(recentMonth) + "/" + date)
-            .concat(categoriesDate);
-
-          availableCategoryNumber -= existingDatesArrayLen;
-        }
-
-        if (availableCategoryNumber == 0) {
-          return categoriesDate;
-        }
-      }
+  for (const month of chartCategoriesMonth) {
+    if (existingMonthsArray.includes(month)) {
+      let average = 0;
+      console.log(data2022[month]);
     }
-    return categoriesDate;
   }
 };
+
+// const makeMonthChartData = (
+//   dataType: string,
+//   chartCategories: string[]
+// ): number[] => {
+//   const data2022 = useRecoilValue(data2022State);
+//   const chartData: number[] = [];
+//   const existingMonthsArray = Object.keys(data2022);
+
+//   if (dataType === "total") {
+//     for (const targetMonth of chartCategories) {
+//       if (existingMonthsArray.includes(targetMonth)) {
+//         let average = 0;
+//         for (const dateData in data2022[targetMonth]) {
+//           average += parseInt(dateData);
+//         }
+//       } else {
+//         chartData.push(0);
+//       }
+//     }
+//   } else if (dataType == "benchPress") {
+//   } else if (dataType == "squat") {
+//   } else if (dataType == "deadLift") {
+//   }
+
+//   return chartData;
+// };
+
+const makeDateChartData = (dataType: string, chartCategories: string[]) => {};
 
 function ChartSection() {
   const data2022 = useRecoilValue(data2022State);
   const currentMonthIdx = new Date().getMonth();
   const chartCategoriesMonth = makeCategoriesMonth(currentMonthIdx);
   const chartCategoriesDate = makeCategoriesDate(data2022);
-  console.log(chartCategoriesDate);
 
-  const [chartCategories, setChartCategories] = useState<number[]>();
+  const [chartCategories, setChartCategories] =
+    useState<string[]>(chartCategoriesMonth);
+
+  const [chartData, setChartData] = useState<number[]>();
+
   const options = {
     chart: {
       id: "basic-bar",
     },
     xaxis: {
-      categories: chartCategoriesMonth,
+      categories: chartCategories,
     },
   };
   const series = [
@@ -100,12 +103,24 @@ function ChartSection() {
         height="500"
       />
       <ChartOptionBtnContainer>
-        <ChartOptionBtn>Total</ChartOptionBtn>
+        <ChartOptionBtn
+          onClick={() =>
+            onTotalBtnClickedUponMonth(data2022, chartCategoriesMonth)
+          }
+        >
+          Total
+        </ChartOptionBtn>
         <ChartOptionBtn>Bennch Press</ChartOptionBtn>
         <ChartOptionBtn>Squat</ChartOptionBtn>
         <ChartOptionBtn>Deadlift</ChartOptionBtn>
-        <ChartOptionBtn>Month</ChartOptionBtn>
-        <ChartOptionBtn>Day</ChartOptionBtn>
+        <ChartOptionBtn
+          onClick={() => setChartCategories(chartCategoriesMonth)}
+        >
+          Month
+        </ChartOptionBtn>
+        <ChartOptionBtn onClick={() => setChartCategories(chartCategoriesDate)}>
+          Date
+        </ChartOptionBtn>
       </ChartOptionBtnContainer>
     </ChartContainer>
   );
