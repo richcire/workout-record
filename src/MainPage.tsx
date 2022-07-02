@@ -85,11 +85,13 @@ function MainPage() {
       const existingMonthsArray = Object.keys(weightData);
       for (const recentMonth of REVERSED_MONTHS_LIST) {
         if (existingMonthsArray.includes(recentMonth)) {
-          const datesToIntList = Object.keys(weightData[recentMonth]).map(
-            (data) => parseInt(data)
-          );
+          const lengthOfrecentMonthData = Object.keys(
+            weightData[recentMonth]
+          ).length;
 
-          const recentDate = Math.max(...datesToIntList);
+          const recentDate = Object.keys(weightData[recentMonth]).sort()[
+            lengthOfrecentMonthData - 1
+          ];
 
           recentBenchPress = parseInt(
             weightData[recentMonth][recentDate].benchPress

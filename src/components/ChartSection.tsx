@@ -37,13 +37,13 @@ const onTotalBtnClickedUponMonth = (
       );
 
       let recentDate: number | string = Math.max(...datesToIntList);
-      console.log(recentDate);
+
       // 1 != "01"
       if (recentDate.toString().length === 1) {
         recentDate = "0" + recentDate;
       }
       const recentDateData = data2022[month][recentDate];
-      console.log(recentDateData);
+
       chartData.push(
         parseInt(recentDateData.benchPress) +
           parseInt(recentDateData.squat) +
@@ -53,8 +53,59 @@ const onTotalBtnClickedUponMonth = (
       chartData.push(0);
     }
   }
-  console.log(chartData);
+
   return chartData;
+};
+
+const onTotalBtnClickedUponDate = (data2022: IData2022) => {
+  const dateData = [0, 0, 0, 0, 0, 0, 0, 0];
+  const existingMonthsArray = Object.keys(data2022);
+  let availableDataNumber = 8;
+
+  for (const recentMonth of REVERSED_MONTHS_LIST) {
+    if (existingMonthsArray.includes(recentMonth)) {
+      const existingDatesArray = Object.keys(data2022[recentMonth]).sort();
+      const existingDatesArrayLen = existingDatesArray.length;
+
+      if (existingDatesArrayLen > availableDataNumber) {
+        const availableDatesArray = existingDatesArray
+          .slice(existingDatesArrayLen - availableDataNumber)
+          .reverse();
+        for (const date in availableDatesArray) {
+          dateData[availableDataNumber - 1] =
+            parseInt(data2022[recentMonth][date].benchPress) +
+            parseInt(data2022[recentMonth][date].squat) +
+            parseInt(data2022[recentMonth][date].deadlift);
+
+          availableDataNumber -= 1;
+
+          if (availableDataNumber === 0) {
+            return dateData;
+          }
+        }
+      } else {
+        const availableDatesArray = existingDatesArray.reverse();
+        console.log(availableDatesArray);
+        for (const date of availableDatesArray) {
+          dateData[availableDataNumber - 1] =
+            parseInt(data2022[recentMonth][date].benchPress) +
+            parseInt(data2022[recentMonth][date].squat) +
+            parseInt(data2022[recentMonth][date].deadlift);
+
+          availableDataNumber -= 1;
+
+          if (availableDataNumber === 0) {
+            return dateData;
+          }
+        }
+      }
+
+      if (availableDataNumber === 0) {
+        return dateData;
+      }
+    }
+  }
+  return dateData;
 };
 
 // const makeMonthChartData = (
@@ -92,18 +143,23 @@ function ChartSection() {
   const currentMonthIdx = new Date().getMonth();
   const chartCategoriesMonth = makeCategoriesMonth(currentMonthIdx);
   const chartCategoriesDate = makeCategoriesDate(data2022);
+  const [chartCategories, setChartCategories] =
+    useState<string[]>(chartCategoriesMonth);
+
+  const [isMonthCategoryOn, setIsMonthCategoryOn] = useState(true);
 
   useEffect(() => {
     setChartData(onTotalBtnClickedUponMonth(data2022, chartCategoriesMonth));
   }, [data2022]);
 
-  const [chartCategories, setChartCategories] =
-    useState<string[]>(chartCategoriesMonth);
-
   const [chartData, setChartData] = useState([0, 0, 0, 0, 0, 0, 0, 0]);
 
-  const onTotalBtnClicked = (data2022: IData2022 | undefined) => {
-    if (typeof data2022 === "undefined") {
+  const onTotalBtnClicked = (isMonthCategoryOn: boolean) => {
+    console.log(isMonthCategoryOn);
+    if (isMonthCategoryOn) {
+      onTotalBtnClickedUponMonth(data2022, chartCategoriesMonth);
+    } else {
+      setChartData(onTotalBtnClickedUponDate(data2022));
     }
   };
 
@@ -132,22 +188,26 @@ function ChartSection() {
         height="500"
       />
       <ChartOptionBtnContainer>
-        <ChartOptionBtn
-          onClick={() =>
-            onTotalBtnClickedUponMonth(data2022, chartCategoriesMonth)
-          }
-        >
+        <ChartOptionBtn onClick={() => onTotalBtnClicked(isMonthCategoryOn)}>
           Total
         </ChartOptionBtn>
         <ChartOptionBtn>Bennch Press</ChartOptionBtn>
         <ChartOptionBtn>Squat</ChartOptionBtn>
         <ChartOptionBtn>Deadlift</ChartOptionBtn>
         <ChartOptionBtn
-          onClick={() => setChartCategories(chartCategoriesMonth)}
+          onClick={() => {
+            setChartCategories(chartCategoriesMonth);
+            setIsMonthCategoryOn(true);
+          }}
         >
           Month
         </ChartOptionBtn>
-        <ChartOptionBtn onClick={() => setChartCategories(chartCategoriesDate)}>
+        <ChartOptionBtn
+          onClick={() => {
+            setChartCategories(chartCategoriesDate);
+            setIsMonthCategoryOn(false);
+          }}
+        >
           Date
         </ChartOptionBtn>
       </ChartOptionBtnContainer>
