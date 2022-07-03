@@ -1,4 +1,4 @@
-import { IData2022 } from "./atoms";
+import { IMonthData, IData2022, IThreeExercicsesState } from "./atoms";
 import { MONTHS_LIST, REVERSED_MONTHS_LIST } from "./constants";
 
 export const changeMonthToInt = (month: string): string => {
@@ -52,4 +52,18 @@ export const makeCategoriesDate = (
     }
     return categoriesDate;
   }
+};
+
+export const returnLatestDateOfMonthData = (monthData: IMonthData) => {
+  const existingDatesArray = Object.keys(monthData).sort();
+  const existingDatesArrayLen = existingDatesArray.length;
+  return existingDatesArray[existingDatesArrayLen - 1];
+};
+
+export const calculateWeightSumOfTheDay = (dateData: IThreeExercicsesState) => {
+  return (
+    parseInt(dateData.benchPress) +
+    parseInt(dateData.squat) +
+    parseInt(dateData.deadlift)
+  );
 };

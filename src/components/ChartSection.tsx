@@ -6,9 +6,11 @@ import styled from "styled-components";
 import { data2022State, IData2022 } from "../atoms";
 import { MONTHS_LIST, REVERSED_MONTHS_LIST } from "../constants";
 import {
+  calculateWeightSumOfTheDay,
   changeMonthToInt,
   makeCategoriesDate,
   makeCategoriesMonth,
+  returnLatestDateOfMonthData,
 } from "../utils";
 
 const ChartContainer = styled.div`
@@ -32,23 +34,10 @@ const onTotalBtnClickedUponMonth = (
 
   for (const month of chartCategoriesMonth) {
     if (existingMonthsArray.includes(month)) {
-      const datesToIntList = Object.keys(data2022[month]).map((data) =>
-        parseInt(data)
-      );
-
-      let recentDate: number | string = Math.max(...datesToIntList);
-
-      // 1 != "01"
-      if (recentDate.toString().length === 1) {
-        recentDate = "0" + recentDate;
-      }
+      const recentDate = returnLatestDateOfMonthData(data2022[month]);
       const recentDateData = data2022[month][recentDate];
 
-      chartData.push(
-        parseInt(recentDateData.benchPress) +
-          parseInt(recentDateData.squat) +
-          parseInt(recentDateData.deadlift)
-      );
+      chartData.push(calculateWeightSumOfTheDay(recentDateData));
     } else {
       chartData.push(0);
     }
@@ -87,10 +76,9 @@ const onTotalBtnClickedUponDate = (data2022: IData2022) => {
         const availableDatesArray = existingDatesArray.reverse();
         console.log(availableDatesArray);
         for (const date of availableDatesArray) {
+          const recentDateData = data2022[recentMonth][date];
           dateData[availableDataNumber - 1] =
-            parseInt(data2022[recentMonth][date].benchPress) +
-            parseInt(data2022[recentMonth][date].squat) +
-            parseInt(data2022[recentMonth][date].deadlift);
+            calculateWeightSumOfTheDay(recentDateData);
 
           availableDataNumber -= 1;
 
@@ -147,6 +135,9 @@ function ChartSection() {
     useState<string[]>(chartCategoriesMonth);
 
   const [isMonthCategoryOn, setIsMonthCategoryOn] = useState(true);
+  const [chartDataStatus, setChartDataStatus] = useState<
+    "total" | "benchPress" | "squat" | "deadlift"
+  >("total");
 
   useEffect(() => {
     setChartData(onTotalBtnClickedUponMonth(data2022, chartCategoriesMonth));
@@ -154,12 +145,44 @@ function ChartSection() {
 
   const [chartData, setChartData] = useState([0, 0, 0, 0, 0, 0, 0, 0]);
 
-  const onTotalBtnClicked = (isMonthCategoryOn: boolean) => {
-    console.log(isMonthCategoryOn);
+  const onTotalBtnClicked = () => {
     if (isMonthCategoryOn) {
-      onTotalBtnClickedUponMonth(data2022, chartCategoriesMonth);
+      setChartData(onTotalBtnClickedUponMonth(data2022, chartCategoriesMonth));
     } else {
       setChartData(onTotalBtnClickedUponDate(data2022));
+    }
+  };
+
+  const onBenchPressBtnClciked = () => {
+    if (isMonthCategoryOn) {
+    } else {
+    }
+  };
+
+  const onSquatBtnClicked = () => {
+    if (isMonthCategoryOn) {
+    } else {
+    }
+  };
+
+  const onDeadliftBtnClicked = () => {
+    if (isMonthCategoryOn) {
+    } else {
+    }
+  };
+
+  const onMonthBtnClicked = () => {
+    if (chartDataStatus === "total") {
+    } else if (chartDataStatus === "benchPress") {
+    } else if (chartDataStatus === "squat") {
+    } else {
+    }
+  };
+  const onDateBtnClicked = () => {
+    if (chartDataStatus === "total") {
+    } else if (chartDataStatus === "benchPress") {
+    } else if (chartDataStatus === "squat") {
+    } else {
     }
   };
 
@@ -188,7 +211,7 @@ function ChartSection() {
         height="500"
       />
       <ChartOptionBtnContainer>
-        <ChartOptionBtn onClick={() => onTotalBtnClicked(isMonthCategoryOn)}>
+        <ChartOptionBtn onClick={() => onTotalBtnClicked()}>
           Total
         </ChartOptionBtn>
         <ChartOptionBtn>Bennch Press</ChartOptionBtn>

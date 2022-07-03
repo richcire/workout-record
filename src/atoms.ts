@@ -1,19 +1,16 @@
 import { atom } from "recoil";
 
-interface IThreeExercicsesState {
+export interface IThreeExercicsesState {
   benchPress: string;
   squat: string;
   deadlift: string;
 }
 
+export interface IMonthData {
+  [key: string]: IThreeExercicsesState;
+}
 export interface IData2022 {
-  [key: string]: {
-    [key: string]: {
-      benchPress: string;
-      squat: string;
-      deadlift: string;
-    };
-  };
+  [key: string]: IMonthData;
 }
 
 export const data2022State = atom<IData2022>({
