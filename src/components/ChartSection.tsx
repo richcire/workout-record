@@ -10,6 +10,7 @@ import {
   changeMonthToInt,
   makeCategoriesDate,
   makeCategoriesMonth,
+  returnDataDependOnBtnType,
   returnLatestDateOfMonthData,
 } from "../utils";
 
@@ -25,9 +26,10 @@ const ChartOptionBtnContainer = styled.div`
 
 const ChartOptionBtn = styled.button``;
 
-const onTotalBtnClickedUponMonth = (
+const onBtnClickedUponMonth = (
   data2022: IData2022,
-  chartCategoriesMonth: string[]
+  chartCategoriesMonth: string[],
+  btnType: string
 ): number[] => {
   const chartData: number[] = [];
   const existingMonthsArray = Object.keys(data2022);
@@ -36,13 +38,11 @@ const onTotalBtnClickedUponMonth = (
     if (existingMonthsArray.includes(month)) {
       const recentDate = returnLatestDateOfMonthData(data2022[month]);
       const recentDateData = data2022[month][recentDate];
-
-      chartData.push(calculateWeightSumOfTheDay(recentDateData));
+      chartData.push(returnDataDependOnBtnType(recentDateData, btnType));
     } else {
       chartData.push(0);
     }
   }
-
   return chartData;
 };
 
@@ -96,32 +96,58 @@ const onTotalBtnClickedUponDate = (data2022: IData2022) => {
   return dateData;
 };
 
-// const makeMonthChartData = (
-//   dataType: string,
-//   chartCategories: string[]
-// ): number[] => {
-//   const data2022 = useRecoilValue(data2022State);
-//   const chartData: number[] = [];
-//   const existingMonthsArray = Object.keys(data2022);
+const onBtnClickedUponDate = (data2022: IData2022, btnType: string) => {
+  const dateData = [0, 0, 0, 0, 0, 0, 0, 0];
+  const existingMonthsArray = Object.keys(data2022);
+  let availableDataNumber = 8;
 
-//   if (dataType === "total") {
-//     for (const targetMonth of chartCategories) {
-//       if (existingMonthsArray.includes(targetMonth)) {
-//         let average = 0;
-//         for (const dateData in data2022[targetMonth]) {
-//           average += parseInt(dateData);
-//         }
-//       } else {
-//         chartData.push(0);
-//       }
-//     }
-//   } else if (dataType == "benchPress") {
-//   } else if (dataType == "squat") {
-//   } else if (dataType == "deadLift") {
-//   }
+  for (const recentMonth of REVERSED_MONTHS_LIST) {
+    if (existingMonthsArray.includes(recentMonth)) {
+      const existingDatesArray = Object.keys(data2022[recentMonth]).sort();
+      const existingDatesArrayLen = existingDatesArray.length;
 
-//   return chartData;
-// };
+      if (existingDatesArrayLen > availableDataNumber) {
+        const availableDatesArray = existingDatesArray
+          .slice(existingDatesArrayLen - availableDataNumber)
+          .reverse();
+        for (const date in availableDatesArray) {
+          const recentDateData = data2022[recentMonth][date];
+          dateData[availableDataNumber - 1] = returnDataDependOnBtnType(
+            recentDateData,
+            btnType
+          );
+
+          availableDataNumber -= 1;
+
+          if (availableDataNumber === 0) {
+            return dateData;
+          }
+        }
+      } else {
+        const availableDatesArray = existingDatesArray.reverse();
+        console.log(availableDatesArray);
+        for (const date of availableDatesArray) {
+          const recentDateData = data2022[recentMonth][date];
+          dateData[availableDataNumber - 1] = returnDataDependOnBtnType(
+            recentDateData,
+            btnType
+          );
+
+          availableDataNumber -= 1;
+
+          if (availableDataNumber === 0) {
+            return dateData;
+          }
+        }
+      }
+
+      if (availableDataNumber === 0) {
+        return dateData;
+      }
+    }
+  }
+  return dateData;
+};
 
 const makeDateChartData = (dataType: string, chartCategories: string[]) => {};
 
@@ -140,34 +166,20 @@ function ChartSection() {
   >("total");
 
   useEffect(() => {
-    setChartData(onTotalBtnClickedUponMonth(data2022, chartCategoriesMonth));
+    setChartData(
+      onBtnClickedUponMonth(data2022, chartCategoriesMonth, "total")
+    );
   }, [data2022]);
 
   const [chartData, setChartData] = useState([0, 0, 0, 0, 0, 0, 0, 0]);
 
-  const onTotalBtnClicked = () => {
+  const onExerciseTypeBtnClicked = (exerciseType: string) => {
     if (isMonthCategoryOn) {
-      setChartData(onTotalBtnClickedUponMonth(data2022, chartCategoriesMonth));
+      setChartData(
+        onBtnClickedUponMonth(data2022, chartCategoriesMonth, exerciseType)
+      );
     } else {
-      setChartData(onTotalBtnClickedUponDate(data2022));
-    }
-  };
-
-  const onBenchPressBtnClciked = () => {
-    if (isMonthCategoryOn) {
-    } else {
-    }
-  };
-
-  const onSquatBtnClicked = () => {
-    if (isMonthCategoryOn) {
-    } else {
-    }
-  };
-
-  const onDeadliftBtnClicked = () => {
-    if (isMonthCategoryOn) {
-    } else {
+      setChartData(onBtnClickedUponDate(data2022, exerciseType));
     }
   };
 
@@ -211,12 +223,18 @@ function ChartSection() {
         height="500"
       />
       <ChartOptionBtnContainer>
-        <ChartOptionBtn onClick={() => onTotalBtnClicked()}>
+        <ChartOptionBtn onClick={() => onExerciseTypeBtnClicked("total")}>
           Total
         </ChartOptionBtn>
-        <ChartOptionBtn>Bennch Press</ChartOptionBtn>
-        <ChartOptionBtn>Squat</ChartOptionBtn>
-        <ChartOptionBtn>Deadlift</ChartOptionBtn>
+        <ChartOptionBtn onClick={() => onExerciseTypeBtnClicked("benchPress")}>
+          Bennch Press
+        </ChartOptionBtn>
+        <ChartOptionBtn onClick={() => onExerciseTypeBtnClicked("squat")}>
+          Squat
+        </ChartOptionBtn>
+        <ChartOptionBtn onClick={() => onExerciseTypeBtnClicked("deadLift")}>
+          Deadlift
+        </ChartOptionBtn>
         <ChartOptionBtn
           onClick={() => {
             setChartCategories(chartCategoriesMonth);

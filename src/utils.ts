@@ -67,3 +67,18 @@ export const calculateWeightSumOfTheDay = (dateData: IThreeExercicsesState) => {
     parseInt(dateData.deadlift)
   );
 };
+
+export const returnDataDependOnBtnType = (
+  recentDateData: IThreeExercicsesState,
+  btnType: string
+) => {
+  if (btnType === "total") {
+    return calculateWeightSumOfTheDay(recentDateData);
+  } else if (btnType === "benchPress") {
+    return parseInt(recentDateData.benchPress);
+  } else if (btnType === "squat") {
+    return parseInt(recentDateData.squat);
+  } else {
+    return parseInt(recentDateData.deadlift);
+  }
+};
