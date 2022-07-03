@@ -75,7 +75,7 @@ const onBtnClickedUponDate = (data2022: IData2022, btnType: string) => {
         }
       } else {
         const availableDatesArray = existingDatesArray.reverse();
-        console.log(availableDatesArray);
+
         for (const date of availableDatesArray) {
           const recentDateData = data2022[recentMonth][date];
           dateData[availableDataNumber - 1] = returnDataDependOnBtnType(
@@ -101,6 +101,16 @@ const onBtnClickedUponDate = (data2022: IData2022, btnType: string) => {
 
 const makeDateChartData = (dataType: string, chartCategories: string[]) => {};
 
+type ExerciseType = "total" | "benchPress" | "squat" | "deadlift";
+interface IEXERCISE_TYPE {
+  [key: string]: ExerciseType;
+}
+const EXERCISE_ENUM: IEXERCISE_TYPE = {
+  TOTAL: "total",
+  BENCH_PRESS: "benchPress",
+  SQUAT: "squat",
+  DEADLIFT: "deadlift",
+};
 function ChartSection() {
   const data2022 = useRecoilValue(data2022State);
 
@@ -111,9 +121,7 @@ function ChartSection() {
     useState<string[]>(chartCategoriesMonth);
 
   const [isMonthCategoryOn, setIsMonthCategoryOn] = useState(true);
-  const [chartDataStatus, setChartDataStatus] = useState<
-    "total" | "benchPress" | "squat" | "deadlift"
-  >("total");
+  const [chartDataStatus, setChartDataStatus] = useState<ExerciseType>("total");
 
   useEffect(() => {
     setChartData(
@@ -123,9 +131,7 @@ function ChartSection() {
 
   const [chartData, setChartData] = useState([0, 0, 0, 0, 0, 0, 0, 0]);
 
-  const onExerciseTypeBtnClicked = (
-    exerciseType: "total" | "benchPress" | "squat" | "deadlift"
-  ) => {
+  const onExerciseTypeBtnClicked = (exerciseType: ExerciseType) => {
     setChartDataStatus(exerciseType);
     if (isMonthCategoryOn) {
       setChartData(
@@ -136,18 +142,14 @@ function ChartSection() {
     }
   };
 
-  const onMonthBtnClicked = (
-    exerciseType: "total" | "benchPress" | "squat" | "deadlift"
-  ) => {
+  const onMonthBtnClicked = (exerciseType: ExerciseType) => {
     setChartCategories(chartCategoriesMonth);
     setIsMonthCategoryOn(true);
     setChartData(
       onBtnClickedUponMonth(data2022, chartCategoriesMonth, exerciseType)
     );
   };
-  const onDateBtnClicked = (
-    exerciseType: "total" | "benchPress" | "squat" | "deadlift"
-  ) => {
+  const onDateBtnClicked = (exerciseType: ExerciseType) => {
     setChartCategories(chartCategoriesDate);
     setIsMonthCategoryOn(false);
     setChartData(onBtnClickedUponDate(data2022, exerciseType));
@@ -178,16 +180,24 @@ function ChartSection() {
         height="500"
       />
       <ChartOptionBtnContainer>
-        <ChartOptionBtn onClick={() => onExerciseTypeBtnClicked("total")}>
+        <ChartOptionBtn
+          onClick={() => onExerciseTypeBtnClicked(EXERCISE_ENUM.TOTAL)}
+        >
           Total
         </ChartOptionBtn>
-        <ChartOptionBtn onClick={() => onExerciseTypeBtnClicked("benchPress")}>
+        <ChartOptionBtn
+          onClick={() => onExerciseTypeBtnClicked(EXERCISE_ENUM.BENCH_PRESS)}
+        >
           Bennch Press
         </ChartOptionBtn>
-        <ChartOptionBtn onClick={() => onExerciseTypeBtnClicked("squat")}>
+        <ChartOptionBtn
+          onClick={() => onExerciseTypeBtnClicked(EXERCISE_ENUM.SQUAT)}
+        >
           Squat
         </ChartOptionBtn>
-        <ChartOptionBtn onClick={() => onExerciseTypeBtnClicked("deadlift")}>
+        <ChartOptionBtn
+          onClick={() => onExerciseTypeBtnClicked(EXERCISE_ENUM.DEADLIFT)}
+        >
           Deadlift
         </ChartOptionBtn>
         <ChartOptionBtn
