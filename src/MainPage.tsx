@@ -10,10 +10,10 @@ import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { data2022State, IData2022, recentExericiseDataState } from "./atoms";
 import ChartSection from "./components/ChartSection";
-import RecentRecords from "./components/RecentRecords";
 
 import SideBar from "./components/SideBar";
 import StatusBar from "./components/StatusBar";
+import TotalDataViewSection from "./components/TotalDataViewSection";
 import { MONTHS_LIST, REVERSED_MONTHS_LIST } from "./constants";
 import { db } from "./firebase-config";
 
@@ -108,20 +108,6 @@ function MainPage() {
     }
   };
 
-  const calculateNumberOfDaysExercised = (
-    weightData: IData2022 | undefined
-  ): number => {
-    if (typeof weightData === "undefined") {
-      return 0;
-    } else {
-      let numberOfDays = 0;
-      for (const month in weightData) {
-        numberOfDays += Object.keys(weightData[month]).length;
-      }
-      return numberOfDays;
-    }
-  };
-
   const [recentBenchPress, recentSquat, recentDeadlift] = useMemo(
     () => calculateThreeWeightSum(data2022),
     [data2022]
@@ -141,8 +127,8 @@ function MainPage() {
         recentSquat={recentSquat}
       />
       <ChartSection />
+      <TotalDataViewSection />
       <SideBar />
-      <RecentRecords />
     </Window>
   );
 }
